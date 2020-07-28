@@ -521,12 +521,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\PermissionRoleExtension.cs" />
     <Compile Include="PermissionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="config.yaml" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
