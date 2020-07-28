@@ -1,10 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using OpenMod.API.Plugins;
 using OpenMod.API.Users;
 using OpenMod.Core.Helpers;
 using OpenMod.Core.Permissions;
 using OpenMod.Core.Permissions.Data;
+using OpenMod.Core.Plugins;
 using OpenMod.Core.Users;
 using OpenMod.Unturned.Plugins;
 using SDG.Unturned;
