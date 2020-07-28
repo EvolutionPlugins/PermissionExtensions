@@ -526,7 +526,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="config.yaml" />
+    <EmbeddedResource Include="config.yaml" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
