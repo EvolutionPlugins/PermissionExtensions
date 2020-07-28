@@ -13,6 +13,15 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <PackageId>DiFFoZ.PermissionExtensions</PackageId> <!-- must be unique, should be same as your plugin ID -->
+  <PackageDescription>Add support prefix, suffix, and color to OpenMod/Unturned</PackageDescription>
+  <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression> <!-- see https://spdx.org/licenses/ -->
+  <PackageAuthor>DiFFoZ</PackageAuthor>
+  <PackageTags>openmod openmod-plugin unturned</PackageTags> <!-- XXX can be unturned, unityengine or universal depending on your plugin -->
+  <Version>0.0.0</Version> <!-- Your plugins version. Must be semversion, see https://semver.org/ -->
+  <AssemblyVersion>0.0.0</AssemblyVersion> <!-- set same as package version, required for dynamicalliy updating your plugin -->
+  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  <GenerateNugetPackage>true</GenerateNugetPackage>  
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
