@@ -12,12 +12,7 @@
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <PackageAuthor>DiFFoZ</PackageAuthor>
     <Version>0.0.0</Version>
-    <AssemblyVersion>0.0.0</AssemblyVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="config.yaml" />
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="config.yaml" />
