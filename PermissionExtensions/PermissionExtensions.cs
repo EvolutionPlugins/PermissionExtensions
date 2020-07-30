@@ -24,7 +24,8 @@ namespace PermissionExtensions
         private readonly IPermissionRolesDataStore m_PermissionRolesDataStore;
         private readonly IUserDataStore m_UserDataStore;
 
-        public PermissionExtensions(IServiceProvider serviceProvider, IPermissionRolesDataStore permissionRolesDataStore, IUserDataStore userDataStore) : base(serviceProvider)
+        public PermissionExtensions(IServiceProvider serviceProvider, IPermissionRolesDataStore permissionRolesDataStore,
+            IUserDataStore userDataStore) : base(serviceProvider)
         {
             m_PermissionRolesDataStore = permissionRolesDataStore;
             m_UserDataStore = userDataStore;
@@ -49,7 +50,7 @@ namespace PermissionExtensions
         private void OnChatted(SteamPlayer player, EChatMode mode, ref UnityEngine.Color chatted, ref bool isRich, string text, ref bool isVisible)
         {
             if (!isVisible) return;
-            UnityEngine.Color altColor = chatted;
+            var altColor = chatted;
 
             AsyncHelper.RunSync(async () =>
             {
@@ -106,11 +107,7 @@ namespace PermissionExtensions
                         continue;
                     }
 
-                    if (result == null)
-                    {
-                        result = role;
-                    }
-                    else if (result.Priority < role.Priority)
+                    if ((result?.Priority ?? -1) < role.Priority)
                     {
                         result = role;
                     }
