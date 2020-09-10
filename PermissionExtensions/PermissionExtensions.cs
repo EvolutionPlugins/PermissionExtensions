@@ -6,6 +6,7 @@ using OpenMod.Core.Helpers;
 using OpenMod.Core.Permissions;
 using OpenMod.Core.Permissions.Data;
 using OpenMod.Core.Users;
+using OpenMod.UnityEngine.Extensions;
 using OpenMod.Unturned.Plugins;
 using SDG.Unturned;
 using Steamworks;
@@ -31,12 +32,11 @@ namespace PermissionExtensions
             m_UserDataStore = userDataStore;
         }
 
-        protected override async UniTask OnLoadAsync()
+        protected override UniTask OnLoadAsync()
         {
-            await AddExample();
-
             Provider.onCheckValidWithExplanation += OnCheckValidWithExplanation;
             ChatManager.onChatted += OnChatted;
+            return AddExample().AsUniTask();
         }
 
         protected override UniTask OnUnloadAsync()
@@ -60,7 +60,7 @@ namespace PermissionExtensions
                     var color = ColorTranslator.FromHtml(role.Data["color"].ToString());
                     if (!color.IsEmpty)
                     {
-                        altColor = new UnityEngine.Color(color.R / 255f, color.G / 255f, color.B / 255f);
+                        altColor = color.ToUnityColor();
                     }
                 }
             });
@@ -124,11 +124,8 @@ namespace PermissionExtensions
                 return;
             }
 
-            var roleIndex = m_PermissionRolesDataStore.Roles.FindIndex(c => c.Id.Equals("default", StringComparison.OrdinalIgnoreCase));
-            if (roleIndex >= 0)
+            foreach (var role in m_PermissionRolesDataStore.Roles)
             {
-                var role = m_PermissionRolesDataStore.Roles[roleIndex];
-
                 if (!role.Data.ContainsKey("color"))
                 {
                     role.Data.Add("color", ColorTranslator.ToHtml(Color.White));
@@ -141,11 +138,8 @@ namespace PermissionExtensions
                 {
                     role.Data.Add("suffix", "");
                 }
-
-                m_PermissionRolesDataStore.Roles[roleIndex] = role;
-
-                await m_PermissionRolesDataStore.SaveChangesAsync();
             }
+            await m_PermissionRolesDataStore.SaveChangesAsync();
         }
     }
 }
