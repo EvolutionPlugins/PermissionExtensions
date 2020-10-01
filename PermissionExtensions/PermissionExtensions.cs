@@ -43,11 +43,11 @@ namespace PermissionExtensions
         {
             Provider.onCheckValidWithExplanation -= OnCheckValidWithExplanation;
             ChatManager.onChatted -= OnChatted;
-
             return UniTask.CompletedTask;
         }
 
-        private void OnChatted(SteamPlayer player, EChatMode mode, ref UnityEngine.Color chatted, ref bool isRich, string text, ref bool isVisible)
+        private void OnChatted(SteamPlayer player, EChatMode mode, ref UnityEngine.Color chatted, ref bool isRich,
+            string text, ref bool isVisible)
         {
             if (!isVisible) return;
             var altColor = chatted;
@@ -68,7 +68,8 @@ namespace PermissionExtensions
             chatted = altColor;
         }
 
-        private void OnCheckValidWithExplanation(ValidateAuthTicketResponse_t callback, ref bool isValid, ref string explanation)
+        private void OnCheckValidWithExplanation(ValidateAuthTicketResponse_t callback, ref bool isValid,
+            ref string explanation)
         {
             if (!isValid) return;
 
@@ -132,11 +133,11 @@ namespace PermissionExtensions
                 }
                 if (!role.Data.ContainsKey("prefix"))
                 {
-                    role.Data.Add("prefix", "");
+                    role.Data.Add("prefix", string.Empty);
                 }
                 if (!role.Data.ContainsKey("suffix"))
                 {
-                    role.Data.Add("suffix", "");
+                    role.Data.Add("suffix", string.Empty);
                 }
             }
             await m_PermissionRolesDataStore.SaveChangesAsync();
