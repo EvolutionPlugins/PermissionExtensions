@@ -36,7 +36,7 @@ namespace PermissionExtensions
         {
             Provider.onCheckValidWithExplanation += OnCheckValidWithExplanation;
             ChatManager.onChatted += OnChatted;
-            return AddExample().AsUniTask();
+            return AddExample().AsUniTask(false);
         }
 
         protected override UniTask OnUnloadAsync()
@@ -118,11 +118,11 @@ namespace PermissionExtensions
             return result;
         }
 
-        private async Task AddExample()
+        private Task AddExample()
         {
             if (!Configuration.GetSection("addExample").Get<bool>())
             {
-                return;
+                return Task.CompletedTask;
             }
 
             foreach (var role in m_PermissionRolesDataStore.Roles)
@@ -140,7 +140,7 @@ namespace PermissionExtensions
                     role.Data.Add("suffix", string.Empty);
                 }
             }
-            await m_PermissionRolesDataStore.SaveChangesAsync();
+            return m_PermissionRolesDataStore.SaveChangesAsync();
         }
     }
 }
