@@ -26,8 +26,8 @@ suffix: " [IV]"
 Example how will be look `openmod.roles.yaml`:
 ```yaml
 roles:
-- id: vip
-  priority: 1
+- id: police
+  priority: 5
   parents:
   - default
   permissions:
@@ -52,3 +52,6 @@ color: "#2ed264"
 ```
 
 You can read more detailed about it in [docs](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.colors?view=netcore-3.1).
+
+# This plugin is so hard to understand
+You can get support in my discord server [![Discord](https://img.shields.io/discord/764502843906064434?label=Discord%20chat)](https://discord.gg/5MT2yke) or in [OpenMod discord](https://discord.gg/M7sY8cc).
