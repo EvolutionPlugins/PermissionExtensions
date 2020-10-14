@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using OpenMod.API.Plugins;
 using OpenMod.API.Users;
 using OpenMod.Core.Helpers;
@@ -24,16 +25,21 @@ namespace PermissionExtensions
     {
         private readonly IPermissionRolesDataStore m_PermissionRolesDataStore;
         private readonly IUserDataStore m_UserDataStore;
+        private readonly ILogger<PermissionExtensions> m_Logger;
 
         public PermissionExtensions(IServiceProvider serviceProvider, IPermissionRolesDataStore permissionRolesDataStore,
-            IUserDataStore userDataStore) : base(serviceProvider)
+            IUserDataStore userDataStore, ILogger<PermissionExtensions> logger) : base(serviceProvider)
         {
             m_PermissionRolesDataStore = permissionRolesDataStore;
             m_UserDataStore = userDataStore;
+            m_Logger = logger;
         }
 
         protected override UniTask OnLoadAsync()
         {
+            m_Logger.LogInformation("Made with <3 by DiFFoZ");
+            m_Logger.LogInformation("https://github.com/evolutionplugins \\ https://github.com/diffoz");
+            m_Logger.LogInformation("Discord: DiFFoZ#6745 \\ https://discord.gg/6KymqGv");
             Provider.onCheckValidWithExplanation += OnCheckValidWithExplanation;
             ChatManager.onChatted += OnChatted;
             return AddExample().AsUniTask(false);
@@ -86,9 +92,12 @@ namespace PermissionExtensions
                     {
                         var suffix = role.Data.ContainsKey("suffix") ? role.Data["suffix"] : string.Empty;
                         var prefix = role.Data.ContainsKey("prefix") ? role.Data["prefix"] : string.Empty;
-
-                        pending.playerID.characterName = prefix + pending.playerID.characterName + suffix;
+                        string pendingName = prefix + pending.playerID.characterName + suffix;
+                        m_Logger.LogTrace($"Change name {pending.playerID.characterName} to {pendingName}");
+                        pending.playerID.characterName = pendingName;
+                        return;
                     }
+                    m_Logger.LogTrace("Role not found");
                 });
             }
         }
