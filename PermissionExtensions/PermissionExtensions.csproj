@@ -12,7 +12,7 @@
     <Version>0.0.0</Version>
     <Authors>DiFFoZ</Authors>
     <Company>EvolutionPlugins</Company>
-    <Description>Add support prefix, suffix, and color for OpenMod/Unturned</Description>
+    <Description>Adds support prefix, suffix, and color for OpenMod/Unturned</Description>
     <RepositoryUrl>https://github.com/DiFFoZ/PermissionExtensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
