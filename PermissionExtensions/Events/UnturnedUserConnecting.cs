@@ -23,14 +23,15 @@ namespace PermissionExtensions.Events
             var role = await m_PermissionExtensions.GetOrderedPermissionRoleData(@event.User.Id);
             if (role == null)
             {
-                m_Logger.LogTrace("Role not found");
+                m_Logger.LogDebug("Role not found");
                 return;
             }
 
             var prefix = role.Data.ContainsKey("prefix") ? role.Data["prefix"] : string.Empty;
             var suffix = role.Data.ContainsKey("suffix") ? role.Data["suffix"] : string.Empty;
             string pendingName = prefix + @event.User.DisplayName + suffix;
-            m_Logger.LogTrace($"Change name {@event.User.DisplayName} to {pendingName}");
+            m_Logger.LogDebug($"Role founded: {role.Id}");
+            m_Logger.LogDebug($"Change name {@event.User.DisplayName} to {pendingName}");
             @event.User.SteamPending.playerID.characterName = pendingName;
         }
     }

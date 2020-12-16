@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Color = System.Drawing.Color;
 
 [assembly: PluginMetadata("PermissionExtensions", Author = "DiFFoZ", DisplayName = "Permission Extensions",
-    Website = "https://github.com/DiFFoZ/PermissionExtensions")]
+    Website = "https://discord.gg/6KymqGv")]
 
 namespace PermissionExtensions
 {
@@ -35,7 +35,13 @@ namespace PermissionExtensions
         {
             m_Logger.LogInformation("Made with <3 by DiFFoZ");
             m_Logger.LogInformation("https://github.com/evolutionplugins \\ https://github.com/diffoz");
-            m_Logger.LogInformation("Discord: https://discord.gg/6KymqGv");
+            m_Logger.LogInformation("Support discord: https://discord.gg/6KymqGv");
+
+            if (RocketModHandleChatPatch.IsRocketInstalled())
+            {
+                RocketModHandleChatPatch.Init(Harmony);
+            }
+
             return AddExample().AsUniTask(false);
         }
 

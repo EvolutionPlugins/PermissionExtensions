@@ -25,9 +25,10 @@ namespace PermissionExtensions.Events
             var role = await m_PermissionExtensions.GetOrderedPermissionRoleData(@event.Player.SteamId.ToString());
             if(role == null)
             {
-                m_Logger.LogTrace("Role not found");
+                m_Logger.LogDebug("Role not found");
                 return;
             }
+            m_Logger.LogDebug($"Role founded: {role.Id}");
 
             if (role.Data.ContainsKey("color"))
             {
