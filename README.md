@@ -9,9 +9,9 @@ Add support prefix, suffix, and color for OpenMod/Unturned!
 Run command `openmod install DiFFoZ.PermissionExtensions`. After installing reload openmod or restart the server.
 
 # How change prefix/suffix or color
-First at all [install a plugin](https://github.com/DiFFoZ/PermissionExtensions#how-installupdate-plugin) then open file `openmod.roles.yaml`. You will see a new data appears in all roles (`color`, `prefix`, and `suffix`).
+Open the file `openmod.roles.yaml`. You would see new data appeared in all roles (`color`, `prefix`, and `suffix`).
 
-- **Color:** you can see about it [there](https://github.com/DiFFoZ/PermissionExtensions#all-available-colors). Example:
+- **Color:** you can see about it [here](https://github.com/DiFFoZ/PermissionExtensions#all-available-colors). Example:
 ```yaml
 color: Blue
 ```
@@ -26,13 +26,29 @@ suffix: " [IV]"
 Example how will be look `openmod.roles.yaml`:
 ```yaml
 roles:
-- id: police
-  priority: 5
+- id: policeBase
+  priority: 0
   parents:
   - default
   permissions:
-  - Kits:kits.vip
-  displayName: 
+  - CuffPlugin:commands.cuff
+  - Kits:kits.policeWeapon
+  - Kits:kits.policeClothes
+  displayName: PoliceBase
+  data:
+    color: "#5061cf"
+    prefix: "[Police] "
+    suffix: ""
+  isAutoAssigned: false
+- id: police
+  priority: 5
+  parents:
+  - policeBase
+  permissions:
+  - !Kits:kits.policeClothes
+  - Kits:kits.policeClothesIV
+  - Kits:kits.policeIV
+  displayName: Major
   data:
     color: Blue
     prefix: "[Police] "
@@ -51,7 +67,5 @@ Also, you can use hex colors. Just set the color to e.g.
 color: "#2ed264"
 ```
 
-You can read more detailed about it in [docs](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.colors?view=netcore-3.1).
-
-# This plugin is so hard to understand
-You can get support in my discord server [![Discord](https://img.shields.io/discord/764502843906064434?label=Discord%20chat)](https://discord.gg/5MT2yke) or in [OpenMod discord](https://discord.gg/M7sY8cc).
+# Support
+You can get support in my discord server [![Discord](https://img.shields.io/discord/764502843906064434?label=Discord%20chat)](https://discord.gg/5MT2yke).
