@@ -1,52 +1,46 @@
 ﻿using HarmonyLib;
-using Serilog;
+using Microsoft.Extensions.Logging;
+using OpenMod.Core.Patching;
 using System;
-using System.Linq;
 using System.Reflection;
 
 namespace PermissionExtensions
 {
-    public static class RocketModHandleChatPatch
+    public class RocketModHandleChatPatch
     {
-        private static bool IsInited;
+        private readonly ILogger<PermissionExtensions> m_Logger;
+        private readonly Assembly m_Assembly;
+        private readonly Harmony m_Harmony;
 
-        public static void Init(Harmony harmony)
+        public RocketModHandleChatPatch(ILogger<PermissionExtensions> logger, Harmony harmony, Assembly assembly)
         {
-            if (IsInited)
-            {
-                return;
-            }
+            m_Logger = logger;
+            m_Harmony = harmony;
+            m_Assembly = assembly;
 
+            Init();
+        }
+
+        private void Init()
+        {
             try
             {
-                var orgMethod = AppDomain.CurrentDomain.GetAssemblies().First(d =>
-                    d.GetName().Name.Contains("Rocket.Unturned")) // Contains because we are using HotReloading
+                var orgMethod = m_Assembly
                     .GetType("Rocket.Unturned.Chat.UnturnedChat")
                     .GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance);
 
-                var ptcMethod = typeof(RocketModHandleChatPatch).GetMethod("handleChat", BindingFlags.Static | BindingFlags.NonPublic);
+                if (orgMethod == null)
+                {
+                    throw new Exception("Couldn't found a \"Awake\" method in UnturnedChat.");
+                }
 
-                var processor = harmony.CreateProcessor(orgMethod);
-                processor.AddPrefix(new HarmonyMethod(ptcMethod));
-                processor.Patch();
-
-                IsInited = true;
+                m_Harmony.NopPatch(orgMethod);
             }
             catch (Exception e)
             {
-                Log.Error(e, "Something goes wrong when patching Rocket method \"Awake\". Report about that here: https://discord.gg/6KymqGv");
-                throw;
+                m_Logger.LogError(e, "Failed to patch UnturnedChat method {method}. Report about that here: https://discord.gg/6KymqGv",
+                    "Awake");
             }
-        }
-
-        private static bool handleChat()
-        {
-            return false;
-        }
-
-        public static bool IsRocketInstalled()
-        {
-            return AppDomain.CurrentDomain.GetAssemblies().Any(d => d.GetName().Name.Equals("Rocket.Unturned"));
         }
     }
 }

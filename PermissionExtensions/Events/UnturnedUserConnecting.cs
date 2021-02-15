@@ -18,20 +18,24 @@ namespace PermissionExtensions.Events
         }
 
         [EventListener(Priority = EventListenerPriority.Normal)]
-        public async Task HandleEventAsync(object sender, UnturnedUserConnectingEvent @event)
+        public async Task HandleEventAsync(object? sender, UnturnedUserConnectingEvent @event)
         {
-            var role = await m_PermissionExtensions.GetOrderedPermissionRoleData(@event.User.Id);
+            var role = await m_PermissionExtensions.GetOrderedPermissionRoleData(@event.User.Id, @event.User.Type);
             if (role == null)
             {
-                m_Logger.LogDebug("Role not found");
+                m_Logger.LogDebug("Role for player {fullName} not found", @event.User.FullActorName);
                 return;
             }
 
-            var prefix = role.Data.ContainsKey("prefix") ? role.Data["prefix"] : string.Empty;
-            var suffix = role.Data.ContainsKey("suffix") ? role.Data["suffix"] : string.Empty;
+            m_Logger.LogDebug("Found role {RoleDisplayName}({RoleId}) for player {fullName}",
+                role.DisplayName, role.Id, @event.User.FullActorName);
+
+            var prefix = role.Data?.ContainsKey("prefix") ?? false ? role.Data["prefix"] : string.Empty;
+            var suffix = role.Data?.ContainsKey("suffix") ?? false ? role.Data["suffix"] : string.Empty;
+
             string pendingName = prefix + @event.User.DisplayName + suffix;
-            m_Logger.LogDebug($"Role founded: {role.Id}");
-            m_Logger.LogDebug($"Change name {@event.User.DisplayName} to {pendingName}");
+
+            m_Logger.LogDebug("Change name {DisplayName} to {pendingName}", @event.User.DisplayName, pendingName);
             @event.User.SteamPending.playerID.characterName = pendingName;
         }
     }

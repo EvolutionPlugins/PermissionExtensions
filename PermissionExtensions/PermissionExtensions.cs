@@ -1,12 +1,14 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Autofac;
+using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Plugins;
 using OpenMod.API.Users;
+using OpenMod.Core.Ioc;
 using OpenMod.Core.Permissions;
 using OpenMod.Core.Permissions.Data;
-using OpenMod.Core.Users;
 using OpenMod.Unturned.Plugins;
+using OpenMod.Unturned.RocketMod;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -22,13 +24,15 @@ namespace PermissionExtensions
         private readonly IPermissionRolesDataStore m_PermissionRolesDataStore;
         private readonly IUserDataStore m_UserDataStore;
         private readonly ILogger<PermissionExtensions> m_Logger;
+        private readonly ILifetimeScope m_LifetimeScope;
 
         public PermissionExtensions(IServiceProvider serviceProvider, IPermissionRolesDataStore permissionRolesDataStore,
-            IUserDataStore userDataStore, ILogger<PermissionExtensions> logger) : base(serviceProvider)
+            IUserDataStore userDataStore, ILogger<PermissionExtensions> logger, ILifetimeScope lifetimeScope) : base(serviceProvider)
         {
             m_PermissionRolesDataStore = permissionRolesDataStore;
             m_UserDataStore = userDataStore;
             m_Logger = logger;
+            m_LifetimeScope = lifetimeScope;
         }
 
         protected override UniTask OnLoadAsync()
@@ -37,20 +41,20 @@ namespace PermissionExtensions
             m_Logger.LogInformation("https://github.com/evolutionplugins \\ https://github.com/diffoz");
             m_Logger.LogInformation("Support discord: https://discord.gg/6KymqGv");
 
-            if (RocketModHandleChatPatch.IsRocketInstalled())
+            if (RocketModIntegration.IsRocketModUnturnedLoaded(out var asm))
             {
-                RocketModHandleChatPatch.Init(Harmony);
+                ActivatorUtilitiesEx.CreateInstance(m_LifetimeScope, typeof(RocketModHandleChatPatch), new object[] { m_Logger, Harmony, asm! });
             }
 
             return AddExample().AsUniTask(false);
         }
 
-        public async Task<PermissionRoleData> GetOrderedPermissionRoleData(string id)
+        public async Task<PermissionRoleData?> GetOrderedPermissionRoleData(string id, string type)
         {
-            PermissionRoleData result = null;
+            PermissionRoleData? result = null;
 
-            var data = await m_UserDataStore.GetUserDataAsync(id, KnownActorTypes.Player);
-            if (data != null)
+            var data = await m_UserDataStore.GetUserDataAsync(id, type);
+            if (data?.Roles != null)
             {
                 foreach (var roleId in data.Roles)
                 {
@@ -60,7 +64,7 @@ namespace PermissionExtensions
                         continue;
                     }
 
-                    if ((result?.Priority ?? -1) < role.Priority)
+                    if ((result?.Priority ?? int.MinValue) < role.Priority)
                     {
                         result = role;
                     }
@@ -79,6 +83,11 @@ namespace PermissionExtensions
 
             foreach (var role in m_PermissionRolesDataStore.Roles)
             {
+                if (role?.Data == null)
+                {
+                    continue;
+                }
+
                 if (!role.Data.ContainsKey("color"))
                 {
                     role.Data.Add("color", ColorTranslator.ToHtml(Color.White));
@@ -92,6 +101,7 @@ namespace PermissionExtensions
                     role.Data.Add("suffix", string.Empty);
                 }
             }
+
             return m_PermissionRolesDataStore.SaveChangesAsync();
         }
     }

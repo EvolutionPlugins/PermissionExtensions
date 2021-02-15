@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using OpenMod.API.Eventing;
 using OpenMod.Core.Eventing;
+using OpenMod.Core.Users;
 using OpenMod.UnityEngine.Extensions;
 using OpenMod.Unturned.Players.Chat.Events;
 using System.Drawing;
@@ -20,28 +21,34 @@ namespace PermissionExtensions.Events
         }
 
         [EventListener(Priority = EventListenerPriority.Normal)]
-        public async Task HandleEventAsync(object sender, UnturnedPlayerChattingEvent @event)
+        public async Task HandleEventAsync(object? sender, UnturnedPlayerChattingEvent @event)
         {
-            var role = await m_PermissionExtensions.GetOrderedPermissionRoleData(@event.Player.SteamId.ToString());
-            if(role == null)
+            var id = @event.Player.SteamId.ToString();
+            var displayName = @event.Player.SteamPlayer.playerID.characterName;
+
+            var role = await m_PermissionExtensions.GetOrderedPermissionRoleData(id, KnownActorTypes.Player);
+            if (role == null)
             {
-                m_Logger.LogDebug("Role not found");
+                m_Logger.LogDebug("Role for player {Name}({Id}) not found", displayName, id);
                 return;
             }
-            m_Logger.LogDebug($"Role founded: {role.Id}");
 
-            if (role.Data.ContainsKey("color"))
+            m_Logger.LogDebug("Found role {RoleDisplayName}({RoleId}) for player {PlayerName}({PlayerId})",
+                role.DisplayName, role.Id, displayName, id);
+
+            if (role.Data!.TryGetValue("color", out var unparsedColor) && unparsedColor is string @string)
             {
-                var colorData = role.Data["color"].ToString();
-                var color = ColorTranslator.FromHtml(colorData);
+                var color = ColorTranslator.FromHtml(@string);
+
                 if (!color.IsEmpty)
                 {
-                    m_Logger.LogDebug($"Change color {@event.Color} to {color}");
+                    m_Logger.LogDebug("Change color {UColor} to {SColor}", new { UColor = @event.Color, SColor = color });
                     @event.Color = color.ToUnityColor();
                     return;
                 }
-                m_Logger.LogDebug($"Cannot translate color {colorData} to System.Drawing.Color");
             }
+
+            m_Logger.LogDebug("Cannot translate color {unparsedColor} to System.Drawing.Color", unparsedColor ?? string.Empty);
         }
     }
 }
