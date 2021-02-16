@@ -42,7 +42,7 @@ namespace PermissionExtensions.Events
 
                 if (!color.IsEmpty)
                 {
-                    m_Logger.LogDebug("Change color {UColor} to {SColor}", new { UColor = @event.Color, SColor = color });
+                    m_Logger.LogDebug("Change color {UColor} to {SColor}", @event.Color, color);
                     @event.Color = color.ToUnityColor();
                     return;
                 }
