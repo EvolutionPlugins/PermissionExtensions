@@ -10,9 +10,7 @@ using OpenMod.Core.Permissions.Data;
 using OpenMod.Unturned.Plugins;
 using OpenMod.Unturned.RocketMod;
 using System;
-using System.Drawing;
 using System.Threading.Tasks;
-using Color = System.Drawing.Color;
 
 [assembly: PluginMetadata("PermissionExtensions", Author = "DiFFoZ", DisplayName = "Permission Extensions",
     Website = "https://discord.gg/6KymqGv")]
@@ -90,7 +88,7 @@ namespace PermissionExtensions
 
                 if (!role.Data.ContainsKey("color"))
                 {
-                    role.Data.Add("color", ColorTranslator.ToHtml(Color.White));
+                    role.Data.Add("color", "white");
                 }
                 if (!role.Data.ContainsKey("prefix"))
                 {
