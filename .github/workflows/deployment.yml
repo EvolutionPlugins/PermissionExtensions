@@ -6,7 +6,7 @@ on:
       version:
         description: 'Plugin Version (SemVer: https://semver.org)'
         required: true
-    update_notes:
+      update_notes:
         default: "-"
         description: "Update Notes to Release"
         required: true
