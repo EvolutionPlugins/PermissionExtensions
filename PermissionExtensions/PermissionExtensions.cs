@@ -12,7 +12,7 @@ using OpenMod.Unturned.RocketMod;
 using System;
 using System.Threading.Tasks;
 
-[assembly: PluginMetadata("PermissionExtensions", Author = "DiFFoZ", DisplayName = "Permission Extensions",
+[assembly: PluginMetadata("PermissionExtensions", Author = "EvolutionPlugins, DiFFoZ", DisplayName = "Permission Extensions",
     Website = "https://discord.gg/6KymqGv")]
 
 namespace PermissionExtensions
@@ -35,7 +35,7 @@ namespace PermissionExtensions
 
         protected override UniTask OnLoadAsync()
         {
-            m_Logger.LogInformation("Made with <3 by DiFFoZ");
+            m_Logger.LogInformation("Made with <3 by EvolutionPlugins");
             m_Logger.LogInformation("https://github.com/evolutionplugins \\ https://github.com/diffoz");
             m_Logger.LogInformation("Support discord: https://discord.gg/6KymqGv");
 
