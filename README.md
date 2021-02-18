@@ -1,9 +1,9 @@
 # Permission Extensions
 Add support prefix, suffix, and color for OpenMod/Unturned!
 
-[![Nuget](https://img.shields.io/nuget/v/DiFFoZ.PermissionExtensions)](https://www.nuget.org/packages/DiFFoZ.PermissionExtensions/)
-[![Nuget](https://img.shields.io/nuget/dt/DiFFoZ.PermissionExtensions)](https://www.nuget.org/packages/DiFFoZ.PermissionExtensions/)
-[![Discord](https://img.shields.io/discord/764502843906064434?label=Discord%20chat)](https://discord.gg/5MT2yke)
+[![Nuget](https://img.shields.io/nuget/v/DiFFoZ.PermissionExtensions?style=for-the-badge)](https://www.nuget.org/packages/DiFFoZ.PermissionExtensions/)
+[![Nuget](https://img.shields.io/nuget/dt/DiFFoZ.PermissionExtensions?style=for-the-badge)](https://www.nuget.org/packages/DiFFoZ.PermissionExtensions/)
+[![Discord](https://img.shields.io/discord/764502843906064434?label=Discord%20chat&style=for-the-badge)](https://discord.gg/5MT2yke)
 
 ## How install/update plugin
 Run command `openmod install DiFFoZ.PermissionExtensions`. After installing reload openmod or restart the server.
@@ -68,4 +68,4 @@ color: "#2ed264"
 ```
 
 # Support
-You can get support in my discord server [![Discord](https://img.shields.io/discord/764502843906064434?label=Discord%20chat)](https://discord.gg/5MT2yke).
+You can get support in my discord server [![Discord](https://img.shields.io/discord/764502843906064434?label=Discord%20chat&style=for-the-badge)](https://discord.gg/5MT2yke)
