@@ -16,6 +16,7 @@ namespace PermissionExtensions
         private readonly Harmony m_Harmony;
         private readonly MethodInfo? m_UnturnedPlayerEventsFirePlayerChattedMethod;
         private readonly MethodInfo? m_UnturnedPlayerFromPlayerMethod;
+        private readonly PropertyInfo? m_UnturnedPlayerColorProperty;
 
         public RocketModHandleChatPatch(ILogger<PermissionExtensions> logger, Harmony harmony, Assembly assembly)
         {
@@ -27,39 +28,40 @@ namespace PermissionExtensions
                 .GetType("Rocket.Unturned.Events.UnturnedPlayerEvents", false)?
                 .GetMethod("firePlayerChatted", BindingFlags.NonPublic | BindingFlags.Static);
 
-            m_UnturnedPlayerFromPlayerMethod = m_Assembly
-                .GetType("Rocket.Unturned.Player.UnturnedPlayer", false)
+            var unturnedPlayerType = m_Assembly.GetType("Rocket.Unturned.Player.UnturnedPlayer", false);
+
+            m_UnturnedPlayerFromPlayerMethod = unturnedPlayerType?
                 .GetMethod("FromPlayer", BindingFlags.Public | BindingFlags.Static);
+
+            m_UnturnedPlayerColorProperty = unturnedPlayerType?
+                .GetProperty("Color", BindingFlags.Public | BindingFlags.Instance);
 
             Init();
         }
 
         public void CallRocketEventInternal(Player player, EChatMode chatMode, ref Color color, string message, ref bool cancel)
         {
-            if (m_UnturnedPlayerEventsFirePlayerChattedMethod == null || m_UnturnedPlayerFromPlayerMethod == null)
+            if (m_UnturnedPlayerEventsFirePlayerChattedMethod == null
+                || m_UnturnedPlayerFromPlayerMethod == null
+                || m_UnturnedPlayerColorProperty == null)
             {
                 return;
             }
+
             try
             {
                 var uPlayer = m_UnturnedPlayerFromPlayerMethod.Invoke(null, new object[] { player });
-                var parameters = new object[]
-                {
-                uPlayer,
-                chatMode,
-                color,
-                message,
-                cancel
-                };
+
+                color = ((UnityEngine.Color)m_UnturnedPlayerColorProperty.GetValue(uPlayer)).ToSystemColor();
+                var parameters = new object[] { uPlayer, chatMode, color.ToUnityColor(), message, cancel };
 
                 color = ((UnityEngine.Color)m_UnturnedPlayerEventsFirePlayerChattedMethod.Invoke(null, parameters)).ToSystemColor();
                 cancel = (bool)parameters[4];
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 m_Logger.LogError(e, "The error occurred when calling the event UnturnedChat.OnPlayerChatted");
             }
-            
         }
 
         private void Init()
