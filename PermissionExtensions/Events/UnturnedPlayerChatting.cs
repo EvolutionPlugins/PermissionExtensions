@@ -49,7 +49,7 @@ namespace PermissionExtensions.Events
                 }
             }
 
-            m_Logger.LogDebug("Cannot translate color {unparsedColor} to System.Drawing.Color", unparsedColor ?? string.Empty);
+            m_Logger.LogDebug("Cannot translate color {unparsedColor} to System.Drawing.Color", unparsedColor ?? "<unknown>");
 
             if (RocketModIntegration.IsRocketModUnturnedLoaded(out _))
             {

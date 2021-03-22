@@ -25,7 +25,9 @@ namespace PermissionExtensions
         private readonly IPermissionRolesDataStore m_PermissionRolesDataStore;
         private readonly IUserDataStore m_UserDataStore;
         private readonly ILogger<PermissionExtensions> m_Logger;
-        private readonly RocketModHandleChatPatch m_HandleChatPatch = null!;
+        private readonly ILifetimeScope m_LifetimeScope;
+
+        private RocketModHandleChatPatch m_HandleChatPatch = null!;
 
         public PermissionExtensions(IServiceProvider serviceProvider, IPermissionRolesDataStore permissionRolesDataStore,
             IUserDataStore userDataStore, ILogger<PermissionExtensions> logger, ILifetimeScope lifetimeScope) : base(serviceProvider)
@@ -33,12 +35,7 @@ namespace PermissionExtensions
             m_PermissionRolesDataStore = permissionRolesDataStore;
             m_UserDataStore = userDataStore;
             m_Logger = logger;
-
-            if (RocketModIntegration.IsRocketModUnturnedLoaded(out var asm))
-            {
-                m_HandleChatPatch =
-                    ActivatorUtilitiesEx.CreateInstance<RocketModHandleChatPatch>(lifetimeScope, new object[] { m_Logger, Harmony, asm! });
-            }
+            m_LifetimeScope = lifetimeScope;
         }
 
         protected override UniTask OnLoadAsync()
@@ -46,6 +43,12 @@ namespace PermissionExtensions
             m_Logger.LogInformation("Made with <3 by EvolutionPlugins");
             m_Logger.LogInformation("https://github.com/evolutionplugins \\ https://github.com/diffoz");
             m_Logger.LogInformation("Support discord: https://discord.gg/6KymqGv");
+
+            if (RocketModIntegration.IsRocketModUnturnedLoaded(out var asm))
+            {
+                m_HandleChatPatch =
+                    ActivatorUtilitiesEx.CreateInstance<RocketModHandleChatPatch>(m_LifetimeScope, new object[] { m_Logger, Harmony, asm! });
+            }
 
             return AddExample().AsUniTask(false);
         }
