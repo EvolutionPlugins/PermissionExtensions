@@ -9,7 +9,7 @@
     <Product>Permission Extensions</Product>
     <PackageId>DiFFoZ.PermissionExtensions</PackageId>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
-    <Authors>EvolutionPlugins, DiFFoZ</Authors>
+    <Authors>EvolutionPlugins</Authors>
     <Company>EvolutionPlugins</Company>
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <Nullable>enable</Nullable>

@@ -4,6 +4,7 @@ using OpenMod.Core.Eventing;
 using OpenMod.Core.Users;
 using OpenMod.UnityEngine.Extensions;
 using OpenMod.Unturned.Players.Chat.Events;
+using OpenMod.Unturned.RocketMod;
 using System.Drawing;
 using System.Threading.Tasks;
 
@@ -49,6 +50,18 @@ namespace PermissionExtensions.Events
             }
 
             m_Logger.LogDebug("Cannot translate color {unparsedColor} to System.Drawing.Color", unparsedColor ?? string.Empty);
+
+            if (RocketModIntegration.IsRocketModUnturnedLoaded(out _))
+            {
+                m_Logger.LogDebug("Calling the event UnturnedChat.OnPlayerChatted");
+
+                var color = @event.Color.ToSystemColor();
+                var cancel = @event.IsCancelled;
+
+                m_PermissionExtensions.CallRocketEvent(@event.Player, @event.Mode, @event.Message, ref color, ref cancel);
+                @event.Color = color.ToUnityColor();
+                @event.IsCancelled = cancel;
+            }
         }
     }
 }

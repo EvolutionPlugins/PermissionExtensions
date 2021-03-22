@@ -7,12 +7,15 @@ using OpenMod.API.Users;
 using OpenMod.Core.Ioc;
 using OpenMod.Core.Permissions;
 using OpenMod.Core.Permissions.Data;
+using OpenMod.Unturned.Players;
 using OpenMod.Unturned.Plugins;
 using OpenMod.Unturned.RocketMod;
+using SDG.Unturned;
 using System;
+using System.Drawing;
 using System.Threading.Tasks;
 
-[assembly: PluginMetadata("PermissionExtensions", Author = "EvolutionPlugins, DiFFoZ", DisplayName = "Permission Extensions",
+[assembly: PluginMetadata("PermissionExtensions", Author = "EvolutionPlugins", DisplayName = "Permission Extensions",
     Website = "https://discord.gg/6KymqGv")]
 
 namespace PermissionExtensions
@@ -22,7 +25,7 @@ namespace PermissionExtensions
         private readonly IPermissionRolesDataStore m_PermissionRolesDataStore;
         private readonly IUserDataStore m_UserDataStore;
         private readonly ILogger<PermissionExtensions> m_Logger;
-        private readonly ILifetimeScope m_LifetimeScope;
+        private readonly RocketModHandleChatPatch m_HandleChatPatch = null!;
 
         public PermissionExtensions(IServiceProvider serviceProvider, IPermissionRolesDataStore permissionRolesDataStore,
             IUserDataStore userDataStore, ILogger<PermissionExtensions> logger, ILifetimeScope lifetimeScope) : base(serviceProvider)
@@ -30,7 +33,12 @@ namespace PermissionExtensions
             m_PermissionRolesDataStore = permissionRolesDataStore;
             m_UserDataStore = userDataStore;
             m_Logger = logger;
-            m_LifetimeScope = lifetimeScope;
+
+            if (RocketModIntegration.IsRocketModUnturnedLoaded(out var asm))
+            {
+                m_HandleChatPatch =
+                    ActivatorUtilitiesEx.CreateInstance<RocketModHandleChatPatch>(lifetimeScope, new object[] { m_Logger, Harmony, asm! });
+            }
         }
 
         protected override UniTask OnLoadAsync()
@@ -39,12 +47,17 @@ namespace PermissionExtensions
             m_Logger.LogInformation("https://github.com/evolutionplugins \\ https://github.com/diffoz");
             m_Logger.LogInformation("Support discord: https://discord.gg/6KymqGv");
 
-            if (RocketModIntegration.IsRocketModUnturnedLoaded(out var asm))
+            return AddExample().AsUniTask(false);
+        }
+
+        internal void CallRocketEvent(UnturnedPlayer player, EChatMode chatMode, string message, ref Color color, ref bool cancel)
+        {
+            if (m_HandleChatPatch == null)
             {
-                ActivatorUtilitiesEx.CreateInstance(m_LifetimeScope, typeof(RocketModHandleChatPatch), new object[] { m_Logger, Harmony, asm! });
+                return;
             }
 
-            return AddExample().AsUniTask(false);
+            m_HandleChatPatch.CallRocketEventInternal(player.Player, chatMode, ref color, message, ref cancel);
         }
 
         public async Task<PermissionRoleData?> GetOrderedPermissionRoleData(string id, string type)
