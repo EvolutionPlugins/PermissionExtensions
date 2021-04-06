@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Cysharp.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Plugins;
 using OpenMod.API.Users;
@@ -44,23 +43,19 @@ namespace PermissionExtensions
             m_Logger.LogInformation("https://github.com/evolutionplugins \\ https://github.com/diffoz");
             m_Logger.LogInformation("Support discord: https://discord.gg/6KymqGv");
 
-            if (RocketModIntegration.IsRocketModUnturnedLoaded(out var asm))
+            if (RocketModIntegration.IsRocketModUnturnedLoaded(out var asm) && RocketModIntegration.IsRocketModInstalled())
             {
                 m_HandleChatPatch =
-                    ActivatorUtilitiesEx.CreateInstance<RocketModHandleChatPatch>(m_LifetimeScope, new object[] { m_Logger, Harmony, asm! });
+                    ActivatorUtilitiesEx.CreateInstance<RocketModHandleChatPatch>(m_LifetimeScope,
+                        m_Logger, Harmony, asm!);
             }
 
             return AddExample().AsUniTask(false);
         }
 
-        internal void CallRocketEvent(UnturnedPlayer player, EChatMode chatMode, string message, ref Color color, ref bool cancel)
+        public void CallRocketEvent(UnturnedPlayer player, EChatMode chatMode, string message, ref Color color, ref bool cancel)
         {
-            if (m_HandleChatPatch == null)
-            {
-                return;
-            }
-
-            m_HandleChatPatch.CallRocketEventInternal(player.Player, chatMode, ref color, message, ref cancel);
+            m_HandleChatPatch?.CallRocketEventInternal(player.Player, chatMode, ref color, message, ref cancel);
         }
 
         public async Task<PermissionRoleData?> GetOrderedPermissionRoleData(string id, string type)
@@ -90,11 +85,7 @@ namespace PermissionExtensions
 
         private Task AddExample()
         {
-            if (!Configuration.GetSection("addExample").Get<bool>())
-            {
-                return Task.CompletedTask;
-            }
-
+            // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator < bad rider
             foreach (var role in m_PermissionRolesDataStore.Roles)
             {
                 if (role?.Data == null)

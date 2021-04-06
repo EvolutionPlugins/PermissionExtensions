@@ -1,1 +1,8 @@
-addExample: true # Add an example to all roles
+override:
+  color:
+    admin: false
+    gold: true
+
+rocketmodIntegration:
+  canCancelMessage: false
+  canOverrideColor: true

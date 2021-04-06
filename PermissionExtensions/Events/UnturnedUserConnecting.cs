@@ -23,11 +23,11 @@ namespace PermissionExtensions.Events
             var role = await m_PermissionExtensions.GetOrderedPermissionRoleData(@event.User.Id, @event.User.Type);
             if (role == null)
             {
-                m_Logger.LogDebug("Role for player {fullName} not found", @event.User.FullActorName);
+                m_Logger.LogDebug("Role for player {FullName} not found", @event.User.FullActorName);
                 return;
             }
 
-            m_Logger.LogDebug("Found role {RoleDisplayName}({RoleId}) for player {fullName}",
+            m_Logger.LogDebug("Found role {RoleDisplayName}({RoleId}) for player {FullName}",
                 role.DisplayName, role.Id, @event.User.FullActorName);
 
             var prefix = role.Data?.ContainsKey("prefix") ?? false ? role.Data["prefix"] : string.Empty;
@@ -35,7 +35,7 @@ namespace PermissionExtensions.Events
 
             string pendingName = prefix + @event.User.DisplayName + suffix;
 
-            m_Logger.LogDebug("Change name {DisplayName} to {pendingName}", @event.User.DisplayName, pendingName);
+            m_Logger.LogDebug("Change name {DisplayName} to {PendingName}", @event.User.DisplayName, pendingName);
             @event.User.SteamPending.playerID.characterName = pendingName;
         }
     }
