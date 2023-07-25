@@ -32,18 +32,18 @@ namespace PermissionExtensions.Events
         {
             var isAdmin = @event.Player.SteamPlayer.isAdmin;
             var isGold = @event.Player.SteamPlayer.isPro;
-            
-            if (!m_Configuration.GetSection("override:color:admin").Get<bool>() && isAdmin || Provider.hideAdmins)
+
+            if (isAdmin && !Provider.hideAdmins && !m_Configuration.GetSection("override:color:admin").Get<bool>())
             {
                 return;
             }
 
-            if (!m_Configuration.GetSection("override:color:gold").Get<bool>() && isGold)
+            if (isGold && !m_Configuration.GetSection("override:color:gold").Get<bool>())
             {
                 return;
             }
 
-            var id = @event.Player.SteamId.ToString();
+            var id = @event.Player.EntityInstanceId;
             var displayName = @event.Player.SteamPlayer.playerID.characterName;
 
             var role = await m_PermissionExtensions.GetOrderedPermissionRoleData(id, KnownActorTypes.Player);
@@ -73,10 +73,10 @@ namespace PermissionExtensions.Events
 
             var eventIsCancelled = @event.IsCancelled;
             var eventColor = @event.Color.ToSystemColor();
-            
+
             CallRocketPlayerChatted(@event.Player, @event.Mode, @event.Message, ref eventColor,
                 ref eventIsCancelled);
-            
+
             @event.IsCancelled = eventIsCancelled;
             @event.Color = eventColor.ToUnityColor();
         }
@@ -89,28 +89,35 @@ namespace PermissionExtensions.Events
                 return;
             }
 
+            var canOverrideColor = m_Configuration.GetSection("rocketmodIntegration:canOverrideColor").Get<bool>();
+            var canCancelMessage = m_Configuration.GetSection("rocketmodIntegration:canCancelMessage").Get<bool>();
+
+            if (!canOverrideColor && !canCancelMessage)
+            {
+                return;
+            }
+
             m_Logger.LogDebug("Calling the event UnturnedChat.OnPlayerChatted");
 
             var colorEx = color;
             var cancelEx = cancel;
 
             m_PermissionExtensions.CallRocketEvent(player, mode, message, ref colorEx, ref cancelEx);
-            if (m_Configuration.GetSection("rocketmodIntegration:canOverrideColor").Get<bool>())
+            if (canOverrideColor)
             {
                 color = colorEx;
             }
 
             if (cancelEx)
             {
-                m_Logger.LogDebug("RocketMod cancel the message!");
+                m_Logger.LogDebug("RocketMod cancelled the message!");
             }
             if (color != colorEx)
             {
-                m_Logger.LogDebug("RocketMod override the color! {FromColor} -> {ToColor}", color, colorEx);
+                m_Logger.LogDebug("RocketMod overrides the color! {FromColor} -> {ToColor}", color, colorEx);
             }
-                
-            cancel = cancelEx && m_Configuration.GetSection("rocketmodIntegration:canCancelMessage").Get<bool>();
 
+            cancel = cancelEx && canCancelMessage;
         }
     }
 }

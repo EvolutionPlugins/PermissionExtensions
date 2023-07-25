@@ -30,8 +30,21 @@ namespace PermissionExtensions.Events
             m_Logger.LogDebug("Found role {RoleDisplayName}({RoleId}) for player {FullName}",
                 role.DisplayName, role.Id, @event.User.FullActorName);
 
-            var prefix = role.Data?.ContainsKey("prefix") ?? false ? role.Data["prefix"] : string.Empty;
-            var suffix = role.Data?.ContainsKey("suffix") ?? false ? role.Data["suffix"] : string.Empty;
+            var prefix = string.Empty;
+            var suffix = string.Empty;
+
+            if (role.Data is not null)
+            {
+                if (role.Data.TryGetValue("prefix", out var obj))
+                {
+                    prefix = (obj as string) ?? string.Empty;
+                }
+
+                if (role.Data.TryGetValue("suffix", out obj))
+                {
+                    suffix = (obj as string) ?? string.Empty;
+                }
+            }
 
             string pendingName = prefix + @event.User.DisplayName + suffix;
 
