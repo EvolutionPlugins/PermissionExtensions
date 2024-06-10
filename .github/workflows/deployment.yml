@@ -6,23 +6,17 @@ on:
       version:
         description: 'Plugin Version (SemVer: https://semver.org)'
         required: true
-      update_notes:
-        default: "-"
-        description: "Update Notes to Release"
-        required: true
 jobs:
   deploy:
     name: "NuGet Deployment"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      name: Checkout Repository
-      with:
-        fetch-depth: 0
+    - name: Checkout Repository
+      uses: actions/checkout@v3
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 8.x
     - name: Install dependencies
       run: dotnet restore
     - name: Update version
@@ -45,7 +39,5 @@ jobs:
         body: |
           Install plugin with command: `openmod install DiFFoZ.PermissionExtensions`
           NuGet: https://www.nuget.org/packages/DiFFoZ.PermissionExtensions
-          Changelog:
-            ${{ github.event.inputs.update_notes }}
         release_name: DiFFoZ.PermissionExtensions v${{ github.event.inputs.version }}
         tag_name: v${{ github.event.inputs.version }}
