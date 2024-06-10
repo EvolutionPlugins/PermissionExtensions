@@ -1,27 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
-	  <PackageTags>openmod openmod-plugin unturned</PackageTags>
-	  <RootNamespace>PermissionExtensions</RootNamespace>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>PermissionExtensions</RootNamespace>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <LangVersion>10</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateNugetPackage>true</GenerateNugetPackage>
     <Product>Permission Extensions</Product>
     <PackageId>DiFFoZ.PermissionExtensions</PackageId>
+    <PackageTags>openmod openmod-plugin unturned</PackageTags>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Authors>EvolutionPlugins</Authors>
     <Company>EvolutionPlugins</Company>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
-    <Nullable>enable</Nullable>
-    <NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
-    <LangVersion>9.0</LangVersion>
-    <Version>0.0.0</Version>
-    <PackageVersion>0.0.0</PackageVersion>
-    <InformationalVersion>0.0.0</InformationalVersion>
     <Description>Adds support prefix, suffix, and color for OpenMod/Unturned</Description>
     <RepositoryUrl>https://github.com/DiFFoZ/PermissionExtensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/DiFFoZ/PermissionExtensions</PackageProjectUrl>
+    <Version>0.0.0</Version>
+    <PackageVersion>0.0.0</PackageVersion>
+    <InformationalVersion>0.0.0</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,11 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenMod.Unturned" Version="3.4.2" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="OpenMod.Unturned" Version="3.8.7" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.6" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
